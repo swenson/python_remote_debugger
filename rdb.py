@@ -149,13 +149,13 @@ class RDBClient(RDBConnection):
     self.socket.sendall(access_code)
 
 
-def start_remote_debugger(port=1235, verbose=False):
+def start_remote_debugger(port=1235, passcode="abc", verbose=False):
   """Starts up a remote debuggin server"""
   
-  t = threading.Thread(target=remote_debugging_loop, args=(port,))
+  t = threading.Thread(target=remote_debugging_loop, args=(port,passcode))
   t.daemon = True
   t.start()
-  if verbose: print("Remote debugger thread restarted")
+  if verbose: print("Remote debugger thread started on port " + str(port))
 
 
 def execute(l):
@@ -203,7 +203,7 @@ def execute(l):
   
   return ret
 
-def remote_debugging_loop(port=1235, verbose=False, use_ssl=False, certfile=None, keyfile=None):
+def remote_debugging_loop(port=1235, passcode="abc", verbose=False, use_ssl=False, certfile=None, keyfile=None):
   """A loop that runs that listens for connections and creates
   RDBServer objects to serve them."""
   
@@ -219,7 +219,7 @@ def remote_debugging_loop(port=1235, verbose=False, use_ssl=False, certfile=None
       if verbose: print("Waiting for a connection")
       conn, addr = s.accept()
       if verbose: print("Connection received from " + str(addr))
-      r = RDBServer(conn, "abc")
+      r = RDBServer(conn, passcode)
       try:
         while True:
           msg = r.recv_msg()
@@ -241,8 +241,19 @@ if __name__ == '__main__':
     while True:
       time.sleep(var)
 
+  port = 1235
+  passcode = "abc"
 
-  start_remote_debugger(verbose=True)
+  try:
+    if len(sys.argv) > 1:
+      port = int(sys.argv[1])
+      if len(sys.argv) > 2:
+        passcode = sys.argv[2]
+  except:
+    print "Usage: ./rdb.py [port [passcode]]"
+    sys.exit(0)
+
+  start_remote_debugger(port=port, passcode=passcode, verbose=True)
 
   other_thread = threading.Thread(target=test_loop)
   other_thread.daemon = True
