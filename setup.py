@@ -8,7 +8,7 @@ setup (name = 'rdb',
        packages = ['rdb', 'rdb/templates'],
        include_package_data = True,
        package_data = {'': ['*.html']},
-       url = 'http://www.github.com/swenson/python_remote_debugger',
+       url = 'http://github.com/swenson/python_remote_debugger',
        long_description = '''
 A remote debugging framework, servers, and a client for Python.
 ''')
