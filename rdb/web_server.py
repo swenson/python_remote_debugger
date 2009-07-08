@@ -99,7 +99,7 @@ def start_server(port=8080,
   # configure SSL support, if asked
   if ssl:
     if ssl_certificate and os.path.exists(ssl_certificate) and \
-       ssl_private_key and os.path.exists(ssl_private_key_file):
+       ssl_private_key and os.path.exists(ssl_private_key):
       cherrypy.config.update({'global': {
         'server.ssl_certificate': ssl_certificate,
         'server.ssl_private_key': ssl_private_key,
