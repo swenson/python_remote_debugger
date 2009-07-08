@@ -1,3 +1,16 @@
+"""
+Web server module.  Simply run
+
+import rdb
+
+rdb.web_server.start_server()
+
+to start up a remote web server instance.
+
+TODO:
+  * Authentication support
+"""
+
 import cherrypy
 import jinja2
 import threading
@@ -5,9 +18,10 @@ import sys
 import traceback
 import socket
 import os
+import os.path
 import time
 
-env = jinja2.Environment(loader=jinja2.PackageLoader('rdb', 'templates'), autoescape=True) 
+_env = jinja2.Environment(loader=jinja2.PackageLoader('rdb', 'templates'), autoescape=True) 
 
 class RDBWebServer(object):
   @cherrypy.expose
@@ -19,13 +33,15 @@ class RDBWebServer(object):
       # only return values for threads that have started
       if t.ident:
         threads.append(t)
+    
     rdb_threads = [t for t in threads if t.name.startswith("_TimeoutMonitor") or \
                     t.name.startswith("CP WSGIServer Thread") or \
                     t.name.startswith("HTTPServer Thread") or \
                     t.name.startswith("Autoreloader") or \
                     t.name.startswith("RDBServerThread")]
+                    
     threads = [t for t in threads if t not in rdb_threads]
-    t = env.get_template('index.html')
+    t = _env.get_template('index.html')
 
     modules = sys.modules.keys()
     modules.sort()        
@@ -44,17 +60,32 @@ class RDBWebServer(object):
     stack = traceback.format_stack(sys._current_frames()[id])
     locals = sys._current_frames()[id].f_locals
     globals = sys._current_frames()[id].f_globals
-    t = env.get_template('thread.html')
+    t = _env.get_template('thread.html')
 
     return t.render(id=id, stack=stack, locals=locals, globals=globals)
 
-_t = threading.Thread(name="RDBServerThread", target=cherrypy.quickstart, args=[RDBWebServer()])
-_t.daemon = True
-_t.start()
 
-#cherrypy.quickstart(RDBWebServer())
+def start_server(port=8080, ssl=False, ssl_certificate=None, ssl_private_key=None):
+  cherrypy.config.update({'server.socket_port': port,})
+  if ssl:
+    if ssl_certificate and os.path.exists(ssl_certificate) and \
+       ssl_private_key and os.path.exists(ssl_private_key_file):
+      cherrypy.config.update({'global': {
+        'server.ssl_certificate': ssl_certificate,
+        'server.ssl_private_key': ssl_private_key,
+      }})
+    else:
+      print("Bad SSL parameters.  Disabling SSL.")
+      ssl = False
+      
+  _t = threading.Thread(name="RDBServerThread", target=cherrypy.quickstart, args=[RDBWebServer()])
+  _t.daemon = True
+  _t.start()
+
 
 if __name__ == '__main__':
+  start_server()
+  
   def test_loop():
     """Simple loop to run in background so that the default thread view is interesting."""
     
