@@ -3,6 +3,16 @@ A remote debugging protocol, server, and simple client for Python.
 Author: Christopher Swenson (chris@caswenson.com)
 Homepage: http://github.com/swenson/python_remote_debugger
 
+A quick how-to:
+
+Include the following in your code:
+
+import rdb
+rdb.web_server.start_server()
+
+Then, connect to http://localhost:8080 and look at all of the stuff it
+tells you.
+
 
 License: MIT Public License
 Copyright (c) 2009 Christopher Swenson
