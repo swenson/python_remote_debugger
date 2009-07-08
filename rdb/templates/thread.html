@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Thread Info{% endblock %}
+{% block content %}
+<p class="links"><a href="/">Back</a></p>
+
+<h1>Thread {{ id }}</h1>
+
+<h2>Stack</h2>
+<ol id="stack">
+  {% for s in stack %}
+    <li class="stack_entry">{{ s }}</li>
+  {% endfor %}
+</ol>
+
+<h2>Local variables</h2>
+<table class="variables">
+{% for k, v in locals.iteritems() %}
+  <tr>
+    <td class="variable">{{ k }}</td>
+    <td class="value">{{ v.__class__ }}</td>
+    <td class="value">{{ v }}</td>
+  </tr>
+{% endfor %}
+</table>
+
+<h2>Global variables</h2>
+<table class="variables">
+{% for k, v in globals.iteritems() %}
+  <tr>
+    <td class="variable">{{ k }}</td>
+    <td class="value">{{ v.__class__ }}</td>
+    <td class="value">{{ v }}</td>
+  </tr>
+{% endfor %}
+</table>
+
+<p class="links"><a href="/">Back</a></p>
+
+{% endblock %}

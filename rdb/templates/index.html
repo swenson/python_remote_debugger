@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Thread List{% endblock %}
+{% block content %}
+<h1>Python Remote Debugger</h1>
+
+<p>Running on {{ hostname }}, CPU: {{ arch }}</p>
+
+<h2>Currently Running Threads</h2>
+<table id="threads">
+  <tr><th>Name</th><th>Identifier</th></tr>
+{% for t in threads %}
+  <tr>
+    <td class="thread_name"><a href="/thread/{{t.ident}}">{{ t.name }}</a></td>
+    <td class="thread_id"><a href="/thread/{{t.ident}}">{{ t.ident }}</a></td>
+  </tr>  
+{% endfor %}
+  <tr><td colspan="2">Remote Debugger / CherryPy Threads</td></tr>
+{% for t in rdb_threads %}
+  <tr>
+    <td class="thread_name"><a href="/thread/{{t.ident}}">{{ t.name }}</a></td>
+    <td class="thread_id"><a href="/thread/{{t.ident}}">{{ t.ident }}</a></td>
+  </tr>  
+{% endfor %}  
+</table>
+
+<h2><tt>sys.path</tt></h2>
+<ol>
+{% for dir in path %}
+  <li class="dir">{{ dir }}</li>
+{% endfor %}
+</ol>
+
+<h2>Loaded Modules</h2>
+<ul>
+{% for module in modules %}
+  <li class="module">{{ module }}</li>
+{% endfor %}
+</ul>  
+
+
+{% endblock %}
+

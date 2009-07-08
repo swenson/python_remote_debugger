@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {% block head %}
+<style type="text/css">
+body {
+  font-family: "Lucida Grande", "Lucida Sans Unicode", helvetica, sans-serif;
+}
+h1 {
+  text-align: center;
+}
+
+.module, .dir, .variable, .value, .stack_entry {
+  font-family: monospace;
+}
+
+.variables {
+  background-color: #eee;
+}
+
+.variable {
+  background-color: #ddd;
+  padding: 2px;
+}
+
+.value {
+  background-color: #ccc;
+  padding: 2px;
+}
+
+.links {
+  text-align: center;
+}      
+
+#threads {
+  margin-left: 20px;
+  background-color: #eee;
+}
+
+#threads th {
+  font-weight: bold;
+  padding: 4px;
+}
+
+#threads .thread_name, #threads .thread_id {
+  font-family: monospace;
+  padding: 4px;
+  background-color: #ddd;
+}
+</style>
+    <title>{% block title %}{% endblock %} - Remote Debugger</title>
+    {% endblock %}
+</head>
+<body>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+        {% endblock %}
+    </div>
+</body>
+</html>
